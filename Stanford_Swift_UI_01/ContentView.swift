@@ -18,6 +18,8 @@ struct ContentView: View {
 //            Image(systemName: "globe")
 //                .imageScale(.large)
 //                .foregroundStyle(.tint)
+//            RoundedRectangle(cornerRadius: 25.0)
+//                .foregroundStyle(.white)
 //        })
 //        .padding()
         
@@ -31,22 +33,27 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    var isFaceUp: Bool = false
+    @State var isFaceUp = false
     
     var body: some View {
-        if isFaceUp {
             ZStack {
-                RoundedRectangle(cornerRadius: 25.0)
-                    .foregroundStyle(.white)
-                RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                    .strokeBorder(lineWidth: 5.0)
-                Text("👻")
-                    .font(.largeTitle)
+                let base = RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
+                if isFaceUp {
+                    base.foregroundStyle(.white)
+                    base.strokeBorder(lineWidth: 5.0)
+                    Text("👻")
+                        .font(.largeTitle)
+                } else {
+                    base.fill()
+                }
             }
             .foregroundStyle(.indigo)
-        } else {
-            RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-        }
+            .onTapGesture {
+                isFaceUp.toggle()
+                
+                // Below is the same as the above
+//                isFaceUp = !isFaceUp
+            }
     }
 }
 
