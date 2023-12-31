@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    let emojis: Array<String> = ["👻", "🎃", "🕷️", "🧟‍♀️"]
+    
     var body: some View {
+        
         
         // The VStack function returns a TupleView ie Views in a Tuple data type
         // The VStack function below specifically returns a tuple with 2 items; Image & text
@@ -24,8 +27,11 @@ struct ContentView: View {
 //        .padding()
         
         HStack {
-            CardView()
-            CardView(isFaceUp: true)
+            // Since you can't have a tradition for loop in this View Struct
+            // This is the substitue function
+            ForEach(emojis.indices, id: \.self) { index in
+                CardView(content: emojis[index])
+            }
         }
         .foregroundStyle(.indigo)
         .padding()
@@ -33,7 +39,8 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    @State var isFaceUp = false
+    let content: String
+    @State var isFaceUp = true
     
     var body: some View {
             ZStack {
@@ -41,7 +48,7 @@ struct CardView: View {
                 if isFaceUp {
                     base.foregroundStyle(.white)
                     base.strokeBorder(lineWidth: 5.0)
-                    Text("👻")
+                    Text(content)
                         .font(.largeTitle)
                 } else {
                     base.fill()
