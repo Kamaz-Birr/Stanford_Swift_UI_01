@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis: Array<String> = ["👻", "🎃", "🕷️", "🧟‍♀️"]
+    let emojis: Array<String> = ["👻", "🎃", "🕷️", "🧟‍♀️", "👹", "🧙🏿‍♂️", "👺", "🧌", "🦇", "🥷🏿", "🧜🏿‍♂️", "🧚🏿‍♀️"]
+    @State var cardCount: Int = 4
     
     var body: some View {
-        
-        
         // The VStack function returns a TupleView ie Views in a Tuple data type
         // The VStack function below specifically returns a tuple with 2 items; Image & text
         // The @ViewBuilder turns the list of views into a TupleView
@@ -26,15 +25,54 @@ struct ContentView: View {
 //        })
 //        .padding()
         
-        HStack {
+        VStack {
+            ScrollView {
+                cards
+            }
+            Spacer()
+            cardCounter
+        }
+        .padding()
+    }
+    
+    var cards: some View {
+        LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
             // Since you can't have a tradition for loop in this View Struct
             // This is the substitue function
-            ForEach(emojis.indices, id: \.self) { index in
+            ForEach(0..<cardCount, id: \.self) { index in
                 CardView(content: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
             }
         }
         .foregroundStyle(.indigo)
-        .padding()
+    }
+    
+    var cardCounter: some View {
+        HStack {
+            cardAdder
+            Spacer()
+            cardRemover
+        }
+        .imageScale(.large)
+        .font(.largeTitle)
+    }
+    
+    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
+        Button {
+            cardCount += offset
+        } label: {
+            Image(systemName: symbol)
+        }
+        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+
+    }
+    
+    var cardAdder: some View {
+        return cardCountAdjuster(by: 1, symbol: "rectangle.stack.fill.badge.plus")
+    }
+    
+    var cardRemover: some View {
+        return cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus")
     }
 }
 
@@ -44,15 +82,15 @@ struct CardView: View {
     
     var body: some View {
             ZStack {
-                let base = RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                if isFaceUp {
+                let base = RoundedRectangle(cornerRadius: 10.0)
+                Group {
                     base.foregroundStyle(.white)
-                    base.strokeBorder(lineWidth: 5.0)
+                    base.strokeBorder(lineWidth: 2.5)
                     Text(content)
                         .font(.largeTitle)
-                } else {
-                    base.fill()
                 }
+                .opacity(isFaceUp ? 1 : 0)
+                base.fill().opacity(isFaceUp ? 0 : 1)
             }
             .foregroundStyle(.indigo)
             .onTapGesture {
